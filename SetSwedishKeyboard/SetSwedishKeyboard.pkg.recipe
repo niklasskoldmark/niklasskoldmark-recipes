@@ -13,7 +13,7 @@
         <key>VERSION</key>
         <string>1.0</string>
         <key>PKG_ID</key>
-        <string>com.github.autopkg.pkg.niklasskoldmark.SetSwedishKeyboard</string>
+        <string>com.github.niklasskoldmark.pkg.SetSwedishKeyboard</string>
     </dict>
     <key>MinimumVersion</key>
     <string>0.2.0</string>
