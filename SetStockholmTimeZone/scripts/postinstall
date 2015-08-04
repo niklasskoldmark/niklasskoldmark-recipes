@@ -1,0 +1,17 @@
+#!/bin/sh
+# SetStockholmTimeZone
+
+if [ "$3" == "/" ]; then
+    TARGETVOL=""
+else
+    TARGETVOL="$3"
+fi
+#TARGETVOL="{{target_volume}}"
+
+file="$TARGETVOL/private/etc/ntp.conf"
+
+rm "$file"
+ln -s "/usr/share/zoneinfo/Europe/Stockholm" "$file"
+#lrwxr-xr-x
+chmod 755 "$file"
+chown root:wheel "$file"

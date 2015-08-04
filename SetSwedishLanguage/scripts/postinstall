@@ -1,0 +1,15 @@
+#!/bin/sh
+# SetSwedishLanguage
+
+if [ "$3" == "/" ]; then
+    TARGETVOL=""
+else
+    TARGETVOL="$3"
+fi
+#TARGETVOL="{{target_volume}}"
+
+DefaultsCMD="$TARGETVOL/usr/bin/defaults"
+file="$TARGETVOL/Library/Preferences/.GlobalPreferences.plist"
+
+touch "$file" 
+"$DefaultsCMD" write "$file" AppleLanguages '(sv)'

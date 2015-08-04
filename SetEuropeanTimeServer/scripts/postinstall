@@ -1,0 +1,15 @@
+#!/bin/sh
+## Time Server
+
+if [ "$3" == "/" ]; then
+    TARGETVOL=""
+else
+    TARGETVOL="$3"
+fi
+
+file="$TARGETVOL/private/etc/ntp.conf"
+touch "$file"
+echo "server time.euro.apple.com" > "$file"
+# -rw-r--r--@
+chmod 644 "$file"
+chown root:wheel "$file"
