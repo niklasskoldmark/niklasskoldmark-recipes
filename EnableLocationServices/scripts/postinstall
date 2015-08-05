@@ -1,0 +1,27 @@
+#!/bin/sh
+# EnableLocationServices
+
+if [ "$3" == "/" ]; then
+    TARGETVOL=""
+    # we're installing on the startup disk, so
+    # unload the locationd LaunchDaemon
+    launchctl unload /System/Library/LaunchDaemons/com.apple.locationd.plist
+else
+    TARGETVOL="$3"
+fi
+#TARGETVOL="{{target_volume}}"
+DefaultsCMD="$TARGETVOL/usr/bin/defaults"
+
+
+uuid="$($TARGETVOL/Volumes/Macintosh\ HD/usr/sbin/system_profiler SPHardwareDataType | grep "Hardware UUID" | cut -c22-57)"
+
+"$DefaultsCMD" write "$TARGETVOL/var/db/locationd/Library/Preferences/ByHost/com.apple.locationd.$uuid" LocationServicesEnabled -int 1
+
+chown -R _locationd:_locationd "$TARGETVOL/var/db/locationd"
+
+
+if [ "$3" == "/" ]; then
+    # we're installing on the startup disk, so
+    # load the locationd LaunchDaemon
+    launchctl load "$RootDrive/System/Library/LaunchDaemons/com.apple.locationd.plist"
+fi
