@@ -8,10 +8,6 @@ else
 fi
 #TARGETVOL="{{target_volume}}"
 
-
-SCRIPT_NAME=`basename "${0}"`
-SCRIPT_PATH=`dirname "${0}"`
-
 KeyboardLayoutName="Swedish-Pro"
 KeyboardLayoutID="7"
 
@@ -40,11 +36,11 @@ update_kdb_layout() {
   done
 }
 
-update_kdb_layout "${TARGETVOL}/Library/Preferences/com.apple.HIToolbox.plist" "$KeyboardLayoutName" "$KeyboardLayoutID" --force
+update_kdb_layout "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist" "$KeyboardLayoutName" "$KeyboardLayoutID" --force
 
-if [ -d "${TARGETVOL}"/var/root/Library/Preferences ]
+if [ -d "$TARGETVOL"/var/root/Library/Preferences ]
 then
-  cd "${TARGETVOL}"/var/root/Library/Preferences
+  cd "$TARGETVOL"/var/root/Library/Preferences
   HITOOLBOX_FILES=`find . -name "com.apple.HIToolbox.*plist"`
   for HITOOLBOX_FILE in ${HITOOLBOX_FILES}
   do
