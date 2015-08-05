@@ -6,14 +6,18 @@ if [ "$3" == "/" ]; then
     # we're installing on the startup disk, so
     # unload the locationd LaunchDaemon
     launchctl unload /System/Library/LaunchDaemons/com.apple.locationd.plist
+    echo "EnableLocationServices TARGETVOL=" >> "$TARGETVOL"/log.txt
+
 else
+    echo "EnableLocationServices TARGETVOL=3=$3" >> "$TARGETVOL"/log.txt
     TARGETVOL="$3"
 fi
 #TARGETVOL="{{target_volume}}"
 DefaultsCMD="$TARGETVOL/usr/bin/defaults"
-
+echo "EnableLocationServices DefaultsCMD=$DefaultsCMD" >> "$TARGETVOL"/log.txt
 
 uuid="$($TARGETVOL/Volumes/Macintosh\ HD/usr/sbin/system_profiler SPHardwareDataType | grep "Hardware UUID" | cut -c22-57)"
+echo "EnableLocationServices uuid=$uuid" >> "$TARGETVOL"/log.txt
 
 "$DefaultsCMD" write "$TARGETVOL/var/db/locationd/Library/Preferences/ByHost/com.apple.locationd.$uuid" LocationServicesEnabled -int 1
 

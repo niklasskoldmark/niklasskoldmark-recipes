@@ -1,5 +1,5 @@
 #!/bin/sh
-# SetSwedishRegion
+# DisableErrorReporting
 
 if [ "$3" == "/" ]; then
     TARGETVOL=""
@@ -8,13 +8,20 @@ else
 fi
 #TARGETVOL="{{target_volume}}"
 DefaultsCMD="$TARGETVOL/usr/bin/defaults"
+echo "DisableErrorReporting : DefaultsCMD=$DefaultsCMD" >> "$TARGETVOL"/log.txt
+
 # Determine OS version
 ProductVersion="$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServices/SystemVersion.plist" ProductVersion)"
+echo "DisableErrorReporting : ProductVersion=$ProductVersion" >> "$TARGETVOL"/log.txt
+
 # Determine Main OS version
 MainProductVersion=$(sw_vers -ProductVersion | awk -F. '{print $2}')
+echo "DisableErrorReporting : MainProductVersion=$MainProductVersion" >> "$TARGETVOL"/log.txt
+
 # Determine OS build number
 ProductBuildVersion="$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServices/SystemVersion.plist" ProductBuildVersion)"
 
+echo "DisableErrorReporting : ProductBuildVersion=$ProductBuildVersion" >> "$TARGETVOL"/log.txt
 
 # Checks first to see if the Mac is running 10.7.0 or higher. 
 # If so, the script checks the system default user template
@@ -23,7 +30,7 @@ ProductBuildVersion="$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServic
 # to be disabled.
 
 if [[ ${MainProductVersion} -ge 7 ]]; then
-
+echo "DisableErrorReporting : MainProductVersion -ge 7" >> "$TARGETVOL"/log.txt
  for USER_TEMPLATE in "$TARGETVOL/System/Library/User Template"/*
   do
     "$DefaultsCMD" write "${USER_TEMPLATE}"/Library/Preferences/com.apple.SetupAssistant DidSeeCloudSetup -bool TRUE
@@ -41,7 +48,9 @@ if [[ ${MainProductVersion} -ge 7 ]]; then
 
  for USER_HOME in "$TARGETVOL"/Users/*
   do
+  	echo "DisableErrorReporting : USER_HOME=$USER_HOME" >> "$TARGETVOL"/log.txt
     USER_UID="$(basename "${USER_HOME}")"
+    echo "DisableErrorReporting : USER_UID=$USER_UID" >> "$TARGETVOL"/log.txt
     if [ ! "${USER_UID}" = "Shared" ]; then
       if [ ! -d "${USER_HOME}"/Library/Preferences ]; then
         /bin/mkdir -p "${USER_HOME}"/Library/Preferences
