@@ -5,7 +5,7 @@
     <key>Description</key>
     <string>Builds a "payload-free" package with a postinstall script that sets the European time server as default.</string>
     <key>Identifier</key>
-    <string>com.github.autopkg.pkg.niklasskoldmark.SetEuropeanTimeServer</string>
+    <string>com.github.niklasskoldmark.pkg.SetEuropeanTimeServer</string>
     <key>Input</key>
     <dict>
         <key>NAME</key>

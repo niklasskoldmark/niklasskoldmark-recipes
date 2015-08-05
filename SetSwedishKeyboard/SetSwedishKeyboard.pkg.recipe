@@ -5,7 +5,7 @@
     <key>Description</key>
     <string>Builds a "payload-free" package with a postinstall script that sets Swedish keyboard as default.</string>
     <key>Identifier</key>
-    <string>com.github.autopkg.pkg.niklasskoldmark.SetSwedishKeyboard</string>
+    <string>com.github.niklasskoldmark.pkg.SetSwedishKeyboard</string>
     <key>Input</key>
     <dict>
         <key>NAME</key>
