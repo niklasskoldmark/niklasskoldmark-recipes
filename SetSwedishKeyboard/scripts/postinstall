@@ -24,3 +24,17 @@ touch "$file"
 # -rw-------
 chmod 600 "$file"
 
+file="$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist"
+#file="$RootDrive/Library/Preferences/com.apple.HIToolbox.plist"
+
+touch "$file"
+"$DefaultsCMD" write "$file" AppleCurrentKeyboardLayoutInputSourceID com.apple.keylayout.Swedish-Pro
+"$DefaultsCMD" write "$file" AppleDateResID -dict smRoman -int 7
+"$DefaultsCMD" write "$file" AppleNumberResID -dict smRoman -int 7
+"$DefaultsCMD" write "$file" AppleTimeResID -dict smRoman -int 7
+"$DefaultsCMD" write "$file" AppleDefaultAsciiInputSource -dict "InputSourceKind" "Keyboard Layout" "KeyboardLayout ID" -int "7" "KeyboardLayout Name" "Swedish-Pro"
+"$DefaultsCMD" write "$file" "AppleEnabledInputSources" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish-Pro</string></dict>'
+"$DefaultsCMD" write "$file" "AppleInputSourceHistory" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish-Pro</string></dict>'
+"$DefaultsCMD" write "$file" "AppleSelectedInputSources" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish-Pro</string></dict>'
+# -rw-------
+chmod 600 "$file"

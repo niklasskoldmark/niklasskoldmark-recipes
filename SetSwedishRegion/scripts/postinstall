@@ -8,9 +8,17 @@ else
 fi
 #TARGETVOL="{{target_volume}}"
 
-DefaultsCMD="$TARGETVOL/usr/bin/defaults"
-file="$TARGETVOL/Library/Preferences/.GlobalPreferences.plist"
+DefaultsCMD="$TARGETVOL/usr/bin/defaults" && \
+    logger "SetSwedishRegion : DefaultsCMD=$DefaultsCMD"
 
-touch "$file" 
-"$DefaultsCMD" write "$file" AppleLocale sv_SE
-"$DefaultsCMD" write "$file" Country SE
+file="$TARGETVOL/Library/Preferences/.GlobalPreferences.plist" && \
+    logger "SetSwedishRegion : file=$file"
+
+touch "$file" && \
+    logger "SetSwedishRegion : touch $file"
+
+"$DefaultsCMD" write "$file" AppleLocale sv_SE && \
+    logger "SetSwedishRegion : $DefaultsCMD write $file AppleLocale sv_SE"
+
+"$DefaultsCMD" write "$file" Country SE && \
+    logger "SetSwedishRegion : $DefaultsCMD write $file Country SE"
