@@ -48,15 +48,7 @@ then
   done
 fi
 
-if [ -d "$TARGETVOL"/private/var/root/Library/Preferences ]
-then
-  cd "$TARGETVOL"/var/root/Library/Preferences
-  HITOOLBOX_FILES=`find . -name "com.apple.HIToolbox.*plist"`
-  for HITOOLBOX_FILE in ${HITOOLBOX_FILES}
-  do
-    update_kdb_layout "${HITOOLBOX_FILE}" "$KeyboardLayoutName" "$KeyboardLayoutID" --force
-  done
-fi
+
 # if [ -n "${4}" ] && [ "${4}" = "--include-homedirs" ]
 # then
   for HOME in "${TARGETVOL}"/Users/*
@@ -67,11 +59,10 @@ fi
       HITOOLBOX_FILES=`find . -name "com.apple.HIToolbox.*plist"`
       for HITOOLBOX_FILE in ${HITOOLBOX_FILES}
       do
-        update_kdb_layout "${HITOOLBOX_FILE}" "${2}" "${3}"
+        update_kdb_layout "${HITOOLBOX_FILE}" "$KeyboardLayoutName" "$KeyboardLayoutID"
       done
     fi
   done
 # fi
-
 
 exit 0

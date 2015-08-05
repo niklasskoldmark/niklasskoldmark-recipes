@@ -7,10 +7,57 @@ else
     TARGETVOL="$3"
 fi
 #TARGETVOL="{{target_volume}}"
-
 DefaultsCMD="$TARGETVOL/usr/bin/defaults"
-file="$TARGETVOL/Library/Preferences/.GlobalPreferences.plist"
+# Determine OS version
+ProductVersion="$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServices/SystemVersion.plist" ProductVersion)"
+# Determine Main OS version
+MainProductVersion=$(sw_vers -ProductVersion | awk -F. '{print $2}')
+# Determine OS build number
+ProductBuildVersion="$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServices/SystemVersion.plist" ProductBuildVersion)"
 
-touch "$file" 
-"$DefaultsCMD" write "$file" AppleLocale sv_SE
-"$DefaultsCMD" "$file" Country SE
+
+# Checks first to see if the Mac is running 10.7.0 or higher. 
+# If so, the script checks the system default user template
+# for the presence of the Library/Preferences directory. Once
+# found, the iCloud and Diagnostic pop-up settings are set 
+# to be disabled.
+
+if [[ ${MainProductVersion} -ge 7 ]]; then
+
+ for USER_TEMPLATE in "$TARGETVOL/System/Library/User Template"/*
+  do
+    "$DefaultsCMD" write "${USER_TEMPLATE}"/Library/Preferences/com.apple.SetupAssistant DidSeeCloudSetup -bool TRUE
+    "$DefaultsCMD" write "${USER_TEMPLATE}"/Library/Preferences/com.apple.SetupAssistant GestureMovieSeen none
+    "$DefaultsCMD" write "${USER_TEMPLATE}"/Library/Preferences/com.apple.SetupAssistant LastSeenCloudProductVersion "${ProductVersion}"
+    "$DefaultsCMD" write "${USER_TEMPLATE}"/Library/Preferences/com.apple.SetupAssistant LastSeenBuddyBuildVersion "${ProductBuildVersion}"      
+  done
+
+# Checks first to see if the Mac is running 10.7.0 or higher.
+ # If so, the script checks the existing user folders in /Users
+ # for the presence of the Library/Preferences directory.
+ #
+ # If the directory is not found, it is created and then the
+ # iCloud and Diagnostic pop-up settings are set to be disabled.
+
+ for USER_HOME in "$TARGETVOL"/Users/*
+  do
+    USER_UID="$(basename "${USER_HOME}")"
+    if [ ! "${USER_UID}" = "Shared" ]; then
+      if [ ! -d "${USER_HOME}"/Library/Preferences ]; then
+        /bin/mkdir -p "${USER_HOME}"/Library/Preferences
+        /usr/sbin/chown "${USER_UID}" "${USER_HOME}"/Library
+        /usr/sbin/chown "${USER_UID}" "${USER_HOME}"/Library/Preferences
+      fi
+      if [ -d "${USER_HOME}"/Library/Preferences ]; then
+        "$DefaultsCMD" write "${USER_HOME}"/Library/Preferences/com.apple.SetupAssistant DidSeeCloudSetup -bool TRUE
+        "$DefaultsCMD" write "${USER_HOME}"/Library/Preferences/com.apple.SetupAssistant GestureMovieSeen none
+        "$DefaultsCMD" write "${USER_HOME}"/Library/Preferences/com.apple.SetupAssistant LastSeenCloudProductVersion "${ProductVersion}"
+        "$DefaultsCMD" write "${USER_HOME}"/Library/Preferences/com.apple.SetupAssistant LastSeenBuddyBuildVersion "${ProductBuildVersion}"
+        /usr/sbin/chown "${USER_UID}" "${USER_HOME}"/Library/Preferences/com.apple.SetupAssistant.plist
+      fi
+    fi
+  done
+fi
+
+exit 0
+
