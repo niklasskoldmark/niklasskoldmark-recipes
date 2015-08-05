@@ -16,7 +16,7 @@ LoginHook="$TARGETVOL/private/etc/hooks/login/MakeFirstLoggedInUserAdmin.sh"
 
 mkdir -p "$(dirname "$LoginHook")"
 
-cat &gt; "$LoginHook" &lt;&lt; 'EOF'
+cat > "$LoginHook" << 'EOF'
 #!/bin/bash
 ##	Promote the first (and ONLY first) Active Directory user that logs in to local admin status
 # Get loggedInUsername
@@ -33,7 +33,7 @@ isAdmin="$( /usr/sbin/dseditgroup -o checkmember -m $loggedInUsername admin 1&gt
 
 # Check if user is an AD-account
 logger "MakeFirstLoggedInUserAdmin : Check if $loggedInUID is an AD-account"
-if [[ $loggedInUID &gt; 1000 ]] ; then
+if [[ $loggedInUID > 1000 ]] ; then
      Check if user is an adminaccount
     if [[ "$isAdmin" -gt 0 ]]; then
         # Make user admin
