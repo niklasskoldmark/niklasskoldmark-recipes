@@ -13,4 +13,4 @@ file="$TARGETVOL/Library/Preferences/.GlobalPreferences.plist"
 
 touch "$file" 
 "$DefaultsCMD" write "$file" AppleLocale sv_SE
-"$DefaultsCMD" "$file" Country SE
+"$DefaultsCMD" write "$file" Country SE
