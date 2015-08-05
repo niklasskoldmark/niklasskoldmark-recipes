@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
     <key>Description</key>
-    <string>Builds a "payload-free" package with a postinstall script that sets Swedish Region as default.</string>
+    <string>Builds a "payload-free" package with a postinstall script that sets Disables icloud setup.</string>
     <key>Identifier</key>
-    <string>com.github.niklasskoldmark.pkg.SetSwedishRegion</string>
+    <string>com.github.niklasskoldmark.pkg.DisableIcloudOnLogin</string>
     <key>Input</key>
     <dict>
         <key>NAME</key>
-        <string>SetSwedishRegion</string>
+        <string>DisableIcloudOnLogin</string>
         <key>VERSION</key>
         <string>1.0</string>
         <key>PKG_ID</key>
-        <string>com.github.niklasskoldmark.pkg.SetSwedishRegion</string>
+        <string>com.github.niklasskoldmark.pkg.DisableIcloudOnLogin</string>
     </dict>
     <key>MinimumVersion</key>
     <string>0.2.0</string>
