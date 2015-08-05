@@ -8,33 +8,65 @@ else
 fi
 #TARGETVOL="{{target_volume}}"
 
-DefaultsCMD="$TARGETVOL/usr/bin/defaults"
-file="$TARGETVOL/private/var/root/Library/Preferences/com.apple.HIToolbox.plist"
-#file="$RootDrive/Library/Preferences/com.apple.HIToolbox.plist"
 
-touch "$file"
-"$DefaultsCMD" write "$file" AppleCurrentKeyboardLayoutInputSourceID com.apple.keylayout.Swedish-Pro
-"$DefaultsCMD" write "$file" AppleDateResID -dict smRoman -int 7
-"$DefaultsCMD" write "$file" AppleNumberResID -dict smRoman -int 7
-"$DefaultsCMD" write "$file" AppleTimeResID -dict smRoman -int 7
-"$DefaultsCMD" write "$file" AppleDefaultAsciiInputSource -dict "InputSourceKind" "Keyboard Layout" "KeyboardLayout ID" -int "7" "KeyboardLayout Name" "Swedish-Pro"
-"$DefaultsCMD" write "$file" "AppleEnabledInputSources" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish-Pro</string></dict>'
-"$DefaultsCMD" write "$file" "AppleInputSourceHistory" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish-Pro</string></dict>'
-"$DefaultsCMD" write "$file" "AppleSelectedInputSources" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish-Pro</string></dict>'
-# -rw-------
-chmod 600 "$file"
+SCRIPT_NAME=`basename "${0}"`
+SCRIPT_PATH=`dirname "${0}"`
 
-file="$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist"
-#file="$RootDrive/Library/Preferences/com.apple.HIToolbox.plist"
+KeyboardLayoutName="Swedish-Pro"
+KeyboardLayoutID="7"
 
-touch "$file"
-"$DefaultsCMD" write "$file" AppleCurrentKeyboardLayoutInputSourceID com.apple.keylayout.Swedish-Pro
-"$DefaultsCMD" write "$file" AppleDateResID -dict smRoman -int 7
-"$DefaultsCMD" write "$file" AppleNumberResID -dict smRoman -int 7
-"$DefaultsCMD" write "$file" AppleTimeResID -dict smRoman -int 7
-"$DefaultsCMD" write "$file" AppleDefaultAsciiInputSource -dict "InputSourceKind" "Keyboard Layout" "KeyboardLayout ID" -int "7" "KeyboardLayout Name" "Swedish-Pro"
-"$DefaultsCMD" write "$file" "AppleEnabledInputSources" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish-Pro</string></dict>'
-"$DefaultsCMD" write "$file" "AppleInputSourceHistory" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish-Pro</string></dict>'
-"$DefaultsCMD" write "$file" "AppleSelectedInputSources" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish-Pro</string></dict>'
-# -rw-------
-chmod 600 "$file"
+
+PLBUDDY="$TARGETVOL/usr/libexec/PlistBuddy"
+
+update_kdb_layout() {
+  logger "SetSwedishKeyboard Updating file '${1}'"
+  ${PLBUDDY} -c "Delete :AppleCurrentKeyboardLayoutInputSourceID" "${1}" &>/dev/null
+  if [ ${?} -eq 0 ] || [ -n "${4}" ]
+  then
+    ${PLBUDDY} -c "Add :AppleCurrentKeyboardLayoutInputSourceID string com.apple.keylayout.${2}" "${1}"
+  fi
+
+  for SOURCE in AppleDefaultAsciiInputSource AppleCurrentAsciiInputSource AppleCurrentInputSource AppleEnabledInputSources AppleSelectedInputSources
+  do
+    ${PLBUDDY} -c "Delete :${SOURCE}" "${1}" &>/dev/null
+    if [ ${?} -eq 0 ] || [ -n "${4}" ]
+    then
+      ${PLBUDDY} -c "Add :${SOURCE} array" "${1}"
+      ${PLBUDDY} -c "Add :${SOURCE}:0 dict" "${1}"
+      ${PLBUDDY} -c "Add :${SOURCE}:0:InputSourceKind string 'Keyboard Layout'" "${1}"
+      ${PLBUDDY} -c "Add :${SOURCE}:0:KeyboardLayout\ ID integer ${3}" "${1}"
+      ${PLBUDDY} -c "Add :${SOURCE}:0:KeyboardLayout\ Name string '${2}'" "${1}"
+    fi
+  done
+}
+
+update_kdb_layout "${TARGETVOL}/Library/Preferences/com.apple.HIToolbox.plist" "$KeyboardLayoutName" "$KeyboardLayoutID" --force
+
+if [ -d "${TARGETVOL}"/var/root/Library/Preferences ]
+then
+  cd "${TARGETVOL}"/var/root/Library/Preferences
+  HITOOLBOX_FILES=`find . -name "com.apple.HIToolbox.*plist"`
+  for HITOOLBOX_FILE in ${HITOOLBOX_FILES}
+  do
+    update_kdb_layout "${HITOOLBOX_FILE}" "$KeyboardLayoutName" "$KeyboardLayoutID" --force
+  done
+fi
+
+# if [ -n "${4}" ] && [ "${4}" = "--include-homedirs" ]
+# then
+#   for HOME in "${TARGETVOL}"/Users/*
+#   do
+#     if [ -d "${HOME}"/Library/Preferences ]
+#     then
+#       cd "${HOME}"/Library/Preferences
+#       HITOOLBOX_FILES=`find . -name "com.apple.HIToolbox.*plist"`
+#       for HITOOLBOX_FILE in ${HITOOLBOX_FILES}
+#       do
+#         update_kdb_layout "${HITOOLBOX_FILE}" "${2}" "${3}"
+#       done
+#     fi
+#   done
+# fi
+
+
+exit 0
