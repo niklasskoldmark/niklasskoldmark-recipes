@@ -6,7 +6,7 @@ if [ "$3" == "/" ]; then
 else
     TARGETVOL="$3"
 fi
-#TARGETVOL="{{target_volume}}"
+TARGETVOL="{{target_volume}}"
 DefaultsCMD="$TARGETVOL/usr/bin/defaults"
 
 #logger "MakeFirstLoggedInUserAdmin : Start"
@@ -73,17 +73,15 @@ else
 fi
 
 # Set loginmessage Set loginmessage to : Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00
-#"$DefaultsCMD" write "$TARGETVOL/Library/Preferences/com.apple.loginwindow" LoginwindowText "Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00" && \
-#    logger "logger MakeFirstLoggedInUserAdmin : Set loginmessage to : Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00"
+"$DefaultsCMD" write "$TARGETVOL/Library/Preferences/com.apple.loginwindow" LoginwindowText "Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00" && \
+    logger "logger MakeFirstLoggedInUserAdmin : Set loginmessage to : Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00"
 
 EOF
  
-chmod 700 "$LoginHook"
-# && \
+chmod 700 "$LoginHook" && \
     logger "MakeFirstLoggedInUserAdmin : Script permissions set"
 
-"$DefaultsCMD" write "$TARGETVOL/var/root/Library/Preferences/com.apple.loginwindow" LoginHook "$LoginHook"
-# && \
+"$DefaultsCMD" write "$TARGETVOL/var/root/Library/Preferences/com.apple.loginwindow" LoginHook "$LoginHook" && \
     logger "MakeFirstLoggedInUserAdmin : Loginhook activated"
 
 exit 0
