@@ -51,6 +51,19 @@ then
   done
 fi
 
+for USER_TEMPLATE in "$TARGETVOL/System/Library/User Template"/*
+  do
+    if [ -d "${HOME}"/Library/Preferences ]
+    then
+      cd "${HOME}"/Library/Preferences
+      HITOOLBOX_FILES=`find . -name "com.apple.HIToolbox.*plist"`
+      for HITOOLBOX_FILE in ${HITOOLBOX_FILES}
+      do
+        update_kdb_layout "${HITOOLBOX_FILE}" "$KeyboardLayoutName" "$KeyboardLayoutID"
+      done
+    fi
+  done
+
 
 # if [ -n "${4}" ] && [ "${4}" = "--include-homedirs" ]
 # then

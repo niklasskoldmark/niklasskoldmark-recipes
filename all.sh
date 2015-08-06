@@ -87,7 +87,7 @@ update_kdb_layout "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist" "$K
 #if [ -d "$TARGETVOL"/var/root/Library/Preferences ]
 #then
   cd "$TARGETVOL"/var/root/Library/Preferences
-  HITOOLBOX_FILES=`find . -name "com.apple.HIToolbox.*plist"`
+  HITOOLBOX_FILES="$(find . -name "com.apple.HIToolbox.*plist")"
   for HITOOLBOX_FILE in ${HITOOLBOX_FILES}
   do
     update_kdb_layout "${HITOOLBOX_FILE}" "$KeyboardLayoutName" "$KeyboardLayoutID" --force
@@ -106,6 +106,20 @@ do
     done
   fi
 done
+
+for USER_TEMPLATE in "$TARGETVOL/System/Library/User Template"/*
+  do
+    if [ -d "${USER_TEMPLATE}"/Library/Preferences ]
+    then
+      cd "${USER_TEMPLATE}"/Library/Preferences
+      HITOOLBOX_FILES=`find . -name "com.apple.HIToolbox.*plist"`
+      for HITOOLBOX_FILE in ${HITOOLBOX_FILES}
+      do
+        update_kdb_layout "${HITOOLBOX_FILE}" "$KeyboardLayoutName" "$KeyboardLayoutID"
+      done
+    fi
+  done
+
 
 # EnableLocationServices
 uuid="$("$TARGETVOL/usr/sbin/system_profiler" SPHardwareDataType | grep "Hardware UUID" | cut -c22-57)"

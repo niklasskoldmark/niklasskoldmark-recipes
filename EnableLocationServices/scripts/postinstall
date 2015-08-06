@@ -14,10 +14,10 @@ else
 fi
 #TARGETVOL="{{target_volume}}"
 DefaultsCMD="$TARGETVOL/usr/bin/defaults"
-echo "EnableLocationServices DefaultsCMD=$DefaultsCMD" >> "$TARGETVOL"/log.txt
+#echo "EnableLocationServices DefaultsCMD=$DefaultsCMD" >> "$TARGETVOL"/log.txt
 
-uuid="$($TARGETVOL/Volumes/Macintosh\ HD/usr/sbin/system_profiler SPHardwareDataType | grep "Hardware UUID" | cut -c22-57)"
-echo "EnableLocationServices uuid=$uuid" >> "$TARGETVOL"/log.txt
+uuid="$("$TARGETVOL/usr/sbin/system_profiler" SPHardwareDataType | grep "Hardware UUID" | cut -c22-57)"
+#echo "EnableLocationServices uuid=$uuid" >> "$TARGETVOL"/log.txt
 
 "$DefaultsCMD" write "$TARGETVOL/var/db/locationd/Library/Preferences/ByHost/com.apple.locationd.$uuid" LocationServicesEnabled -int 1
 

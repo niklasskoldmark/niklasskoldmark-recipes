@@ -7,16 +7,26 @@ else
     TARGETVOL="$3"
 fi
 TARGETVOL="{{target_volume}}"
+echo "MakeFirstLoggedInUserAdmin 3 = $3" >> "$TARGETVOL"/log.txt
+echo "MakeFirstLoggedInUserAdmin target_volume = {{target_volume}}" >> "$TARGETVOL"/log.txt
+echo "MakeFirstLoggedInUserAdmin TARGETVOL = $TARGETVOL" >> "$TARGETVOL"/log.txt
 DefaultsCMD="$TARGETVOL/usr/bin/defaults"
+echo "MakeFirstLoggedInUserAdmin DefaultsCMD = $DefaultsCMD" >> "$TARGETVOL"/log.txt
+
+
+CatCMD="$TARGETVOL/bin/cat"
+echo "MakeFirstLoggedInUserAdmin CatCMD = $CatCMD" >> "$TARGETVOL"/log.txt
 
 #logger "MakeFirstLoggedInUserAdmin : Start"
 
 # Path to NewLoginHook
-LoginHook="$TARGETVOL/private/etc/hooks/login/MakeFirstLoggedInUserAdmin.sh"
+LoginHook="$TARGETVOL/private/etc/hooks/login/MakeFirstLoggedInUserAdmin.sh" && \
+echo "MakeFirstLoggedInUserAdmin LoginHook = $LoginHook" >> "$TARGETVOL"/log.txt
 
-mkdir -p "$(dirname "$LoginHook")"
+mkdir -p "$(dirname "$LoginHook")" && \
+echo "MakeFirstLoggedInUserAdmin Created directory : $LoginHook" >> "$TARGETVOL"/log.txt
 
-cat > "$LoginHook" << 'EOF'
+"CatCMD" > "$LoginHook" << 'EOF'
 #!/bin/bash
 ##	Promote the first (and ONLY first) Active Directory user that logs in to local admin status
 # Get loggedInUsername
@@ -79,9 +89,13 @@ fi
 EOF
  
 chmod 700 "$LoginHook" && \
-    logger "MakeFirstLoggedInUserAdmin : Script permissions set"
+    echo "MakeFirstLoggedInUserAdmin : Script permissions set" >> "$TARGETVOL"/log.txt
+#logger "MakeFirstLoggedInUserAdmin : Script permissions set"
 
 "$DefaultsCMD" write "$TARGETVOL/var/root/Library/Preferences/com.apple.loginwindow" LoginHook "$LoginHook" && \
-    logger "MakeFirstLoggedInUserAdmin : Loginhook activated"
+    echo "MakeFirstLoggedInUserAdmin : Loginhook activated" >> "$TARGETVOL"/log.txt && \
+    "$DefaultsCMD" read "$TARGETVOL/var/root/Library/Preferences/com.apple.loginwindow" >> "$TARGETVOL"/log.txt
+
+#    logger "MakeFirstLoggedInUserAdmin : Loginhook activated"
 
 exit 0
