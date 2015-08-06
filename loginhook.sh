@@ -12,10 +12,14 @@ echo "MakeFirstLoggedInUserAdmin target_volume = {{target_volume}}" >> "$TARGETV
 echo "MakeFirstLoggedInUserAdmin TARGETVOL = $TARGETVOL" >> "$TARGETVOL"/log.txt
 DefaultsCMD="$TARGETVOL/usr/bin/defaults"
 echo "MakeFirstLoggedInUserAdmin DefaultsCMD = $DefaultsCMD" >> "$TARGETVOL"/log.txt
-
-
+DirnameCMD="$TARGETVOL/usr/bin/dirname"
+echo "MakeFirstLoggedInUserAdmin DirnameCMD = $DirnameCMD" >> "$TARGETVOL"/log.txt
 CatCMD="$TARGETVOL/bin/cat"
 echo "MakeFirstLoggedInUserAdmin CatCMD = $CatCMD" >> "$TARGETVOL"/log.txt
+MkdirCMD="$TARGETVOL/bin/mkdir"
+echo "MakeFirstLoggedInUserAdmin MkdirCMD = $MkdirCMD" >> "$TARGETVOL"/log.txt
+ChmodCMD="$TARGETVOL/bin/chmod"
+echo "MakeFirstLoggedInUserAdmin MkdirCMD = $MkdirCMD" >> "$TARGETVOL"/log.txt
 
 #logger "MakeFirstLoggedInUserAdmin : Start"
 
@@ -23,10 +27,10 @@ echo "MakeFirstLoggedInUserAdmin CatCMD = $CatCMD" >> "$TARGETVOL"/log.txt
 LoginHook="$TARGETVOL/private/etc/hooks/login/MakeFirstLoggedInUserAdmin.sh" && \
 echo "MakeFirstLoggedInUserAdmin LoginHook = $LoginHook" >> "$TARGETVOL"/log.txt
 
-mkdir -p "$(dirname "$LoginHook")" && \
+"$MkdirCMD" -p "$("$DirnameCMD" "$LoginHook")" && \
 echo "MakeFirstLoggedInUserAdmin Created directory : $LoginHook" >> "$TARGETVOL"/log.txt
 
-"CatCMD" > "$LoginHook" << 'EOF'
+"$CatCMD" > "$LoginHook" << 'EOF'
 #!/bin/bash
 ##	Promote the first (and ONLY first) Active Directory user that logs in to local admin status
 # Get loggedInUsername
@@ -88,7 +92,7 @@ fi
 
 EOF
  
-chmod 700 "$LoginHook" && \
+"$ChmodCMD" 700 "$LoginHook" && \
     echo "MakeFirstLoggedInUserAdmin : Script permissions set" >> "$TARGETVOL"/log.txt
 #logger "MakeFirstLoggedInUserAdmin : Script permissions set"
 

@@ -39,46 +39,10 @@ update_kdb_layout() {
   done
 }
 
+touch "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist"
+chmod 644 "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist"
+chown root:wheel "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist"
 update_kdb_layout "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist" "$KeyboardLayoutName" "$KeyboardLayoutID" --force
 
-if [ -d "$TARGETVOL"/var/root/Library/Preferences ]
-then
-  cd "$TARGETVOL"/var/root/Library/Preferences
-  HITOOLBOX_FILES=`find . -name "com.apple.HIToolbox.*plist"`
-  for HITOOLBOX_FILE in ${HITOOLBOX_FILES}
-  do
-    update_kdb_layout "${HITOOLBOX_FILE}" "$KeyboardLayoutName" "$KeyboardLayoutID" --force
-  done
-fi
-
-for USER_TEMPLATE in "$TARGETVOL/System/Library/User Template"/*
-  do
-    if [ -d "${HOME}"/Library/Preferences ]
-    then
-      cd "${HOME}"/Library/Preferences
-      HITOOLBOX_FILES=`find . -name "com.apple.HIToolbox.*plist"`
-      for HITOOLBOX_FILE in ${HITOOLBOX_FILES}
-      do
-        update_kdb_layout "${HITOOLBOX_FILE}" "$KeyboardLayoutName" "$KeyboardLayoutID"
-      done
-    fi
-  done
-
-
-# if [ -n "${4}" ] && [ "${4}" = "--include-homedirs" ]
-# then
-  for HOME in "${TARGETVOL}"/Users/*
-  do
-    if [ -d "${HOME}"/Library/Preferences ]
-    then
-      cd "${HOME}"/Library/Preferences
-      HITOOLBOX_FILES=`find . -name "com.apple.HIToolbox.*plist"`
-      for HITOOLBOX_FILE in ${HITOOLBOX_FILES}
-      do
-        update_kdb_layout "${HITOOLBOX_FILE}" "$KeyboardLayoutName" "$KeyboardLayoutID"
-      done
-    fi
-  done
-# fi
 
 exit 0

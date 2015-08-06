@@ -13,7 +13,7 @@ DefaultsCMD="$TARGETVOL/usr/bin/defaults"
 ProductVersion="$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServices/SystemVersion.plist" ProductVersion)"
 
 # Determine Main OS version
-MainProductVersion=$(sw_vers -ProductVersion | awk -F. '{print $2}')
+MainProductVersion=$(echo "$ProductVersion" | awk -F. '{print $2}')
 
 # Determine OS build number
 ProductBuildVersion="$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServices/SystemVersion.plist" ProductBuildVersion)"

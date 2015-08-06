@@ -17,6 +17,9 @@ file="$TARGETVOL/Library/Preferences/.GlobalPreferences.plist" && \
 touch "$file" && \
     logger "SetSwedishRegion : touch $file"
 
+# -rw-r--r--
+chmod 644 "$file"
+chown root:wheel "$file"
 "$DefaultsCMD" write "$file" AppleLocale sv_SE && \
     logger "SetSwedishRegion : $DefaultsCMD write $file AppleLocale sv_SE"
 

@@ -11,5 +11,8 @@ fi
 DefaultsCMD="$TARGETVOL/usr/bin/defaults"
 file="$TARGETVOL/Library/Preferences/.GlobalPreferences.plist"
 
-touch "$file" 
+touch "$file"
+# -rw-r--r--
+chmod 644 "$file"
+chown root:wheel "$file"
 "$DefaultsCMD" write "$file" AppleLanguages '(sv)'

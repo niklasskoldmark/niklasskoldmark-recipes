@@ -80,6 +80,7 @@ update_kdb_layout() {
       ${PLBUDDY} -c "Add :${SOURCE}:0:KeyboardLayout\ Name string '${2}'" "${1}"
     fi
   done
+  "$DefaultsCMD" read "$1" >> "$TARGETVOL"/log.txt
 }
 
 update_kdb_layout "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist" "$KeyboardLayoutName" "$KeyboardLayoutID" --force
