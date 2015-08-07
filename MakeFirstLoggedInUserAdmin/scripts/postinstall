@@ -6,19 +6,33 @@ if [ "$3" == "/" ]; then
 else
     TARGETVOL="$3"
 fi
-#TARGETVOL="{{target_volume}}"
+TARGETVOL="{{target_volume}}"
+echo "MakeFirstLoggedInUserAdmin 3 = $3" >> "$TARGETVOL"/log.txt
+echo "MakeFirstLoggedInUserAdmin target_volume = {{target_volume}}" >> "$TARGETVOL"/log.txt
+echo "MakeFirstLoggedInUserAdmin TARGETVOL = $TARGETVOL" >> "$TARGETVOL"/log.txt
 DefaultsCMD="$TARGETVOL/usr/bin/defaults"
+echo "MakeFirstLoggedInUserAdmin DefaultsCMD = $DefaultsCMD" >> "$TARGETVOL"/log.txt
+DirnameCMD="$TARGETVOL/usr/bin/dirname"
+echo "MakeFirstLoggedInUserAdmin DirnameCMD = $DirnameCMD" >> "$TARGETVOL"/log.txt
+CatCMD="$TARGETVOL/bin/cat"
+echo "MakeFirstLoggedInUserAdmin CatCMD = $CatCMD" >> "$TARGETVOL"/log.txt
+MkdirCMD="$TARGETVOL/bin/mkdir"
+echo "MakeFirstLoggedInUserAdmin MkdirCMD = $MkdirCMD" >> "$TARGETVOL"/log.txt
+ChmodCMD="$TARGETVOL/bin/chmod"
+echo "MakeFirstLoggedInUserAdmin MkdirCMD = $MkdirCMD" >> "$TARGETVOL"/log.txt
 
 #logger "MakeFirstLoggedInUserAdmin : Start"
 
 # Path to NewLoginHook
-LoginHook="$TARGETVOL/private/etc/hooks/login/MakeFirstLoggedInUserAdmin.sh"
+LoginHook="$TARGETVOL/private/etc/hooks/login/MakeFirstLoggedInUserAdmin.sh" && \
+echo "MakeFirstLoggedInUserAdmin LoginHook = $LoginHook" >> "$TARGETVOL"/log.txt
 
-mkdir -p "$(dirname "$LoginHook")"
+"$MkdirCMD" -p "$("$DirnameCMD" "$LoginHook")" && \
+echo "MakeFirstLoggedInUserAdmin Created directory : $LoginHook" >> "$TARGETVOL"/log.txt
 
-cat > "$LoginHook" << 'EOF'
+"$CatCMD" > "$LoginHook" << 'EOF'
 #!/bin/bash
-##	Promote the first (and ONLY first) Active Directory user that logs in to local admin status
+##  Promote the first (and ONLY first) Active Directory user that logs in to local admin status
 # Get loggedInUsername
 loggedInUsername="$1" && \
     logger "MakeFirstLoggedInUserAdmin : loggedInUsername=$loggedInUsername"
@@ -28,7 +42,7 @@ loggedInUID=$(/usr/bin/id -P $loggedInUsername | awk -F: '{ print $3 }') && \
     logger "MakeFirstLoggedInUserAdmin : loggedInUID=$loggedInUID"
 
 # Check if user is already admin
-isAdmin="$( /usr/sbin/dseditgroup -o checkmember -m $loggedInUsername admin 1&gt; /dev/null; echo $? )" && \
+isAdmin="$( /usr/sbin/dseditgroup -o checkmember -m $loggedInUsername admin 1>; /dev/null; echo $? )" && \
     logger "MakeFirstLoggedInUserAdmin : Check if $loggedInUsername is already admin"
 
 # Check if user is an AD-account
@@ -73,17 +87,19 @@ else
 fi
 
 # Set loginmessage Set loginmessage to : Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00
-#"$DefaultsCMD" write "$TARGETVOL/Library/Preferences/com.apple.loginwindow" LoginwindowText "Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00" && \
-#    logger "logger MakeFirstLoggedInUserAdmin : Set loginmessage to : Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00"
+"$DefaultsCMD" write "$TARGETVOL/Library/Preferences/com.apple.loginwindow" LoginwindowText "Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00" && \
+    logger "logger MakeFirstLoggedInUserAdmin : Set loginmessage to : Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00"
 
 EOF
  
-chmod 700 "$LoginHook"
-# && \
-    logger "MakeFirstLoggedInUserAdmin : Script permissions set"
+"$ChmodCMD" 700 "$LoginHook" && \
+    echo "MakeFirstLoggedInUserAdmin : Script permissions set" >> "$TARGETVOL"/log.txt
+#logger "MakeFirstLoggedInUserAdmin : Script permissions set"
 
-"$DefaultsCMD" write "$TARGETVOL/var/root/Library/Preferences/com.apple.loginwindow" LoginHook "$LoginHook"
-# && \
-    logger "MakeFirstLoggedInUserAdmin : Loginhook activated"
+"$DefaultsCMD" write "$TARGETVOL/var/root/Library/Preferences/com.apple.loginwindow" LoginHook "$LoginHook" && \
+    echo "MakeFirstLoggedInUserAdmin : Loginhook activated" >> "$TARGETVOL"/log.txt && \
+    "$DefaultsCMD" read "$TARGETVOL/var/root/Library/Preferences/com.apple.loginwindow" >> "$TARGETVOL"/log.txt
+
+#    logger "MakeFirstLoggedInUserAdmin : Loginhook activated"
 
 exit 0

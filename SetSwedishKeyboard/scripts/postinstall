@@ -6,48 +6,41 @@ if [ "$3" == "/" ]; then
 else
     TARGETVOL="$3"
 fi
-#TARGETVOL="{{target_volume}}"
+TARGETVOL="{{target_volume}}"
 
-KeyboardLayoutName="Swedish - Pro"
-KeyboardLayout="Swedish-Pro"
-KeyboardLayoutID="7"
+echo "SetSwedishKeyboard TARGETVOL = $TARGETVOL" >> "$TARGETVOL"/log.txt
+
 
 DefaultsCMD="$TARGETVOL/usr/bin/defaults"
+echo "SetSwedishKeyboard DefaultsCMD = $DefaultsCMD" >> "$TARGETVOL"/log.txt
 
-PLBUDDY="$TARGETVOL/usr/libexec/PlistBuddy"
+#file="$TARGETVOL/private/var/root/Library/Preferences/com.apple.HIToolbox.plist"
 
-update_kdb_layout() {
-  #logger "SetSwedishKeyboard Updating file '${1}'"
-  echo "SetSwedishKeyboard Updating file '${1}'" >> "$TARGETVOL"/log.txt
-  ${PLBUDDY} -c "Delete :AppleCurrentKeyboardLayoutInputSourceID" "${1}" &>/dev/null
-  if [ ${?} -eq 0 ] || [ -n "${4}" ]
-  then
-    #${PLBUDDY} -c "Add :AppleCurrentKeyboardLayoutInputSourceID string com.apple.keylayout.${2}" "${1}"
-    ${PLBUDDY} -c "Add :AppleCurrentKeyboardLayoutInputSourceID string com.apple.keylayout.$KeyboardLayout" "${1}"
-  fi
+file="$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist"
+echo "SetSwedishKeyboard file = $file" >> "$TARGETVOL"/log.txt
+rm -f "$file"
+echo "SetSwedishKeyboard $file rm" >> "$TARGETVOL"/log.txt
+ls -al "$file" >> "$TARGETVOL"/log.txt
+touch "$file"
+echo "SetSwedishKeyboard $file touch" >> "$TARGETVOL"/log.txt
+ls -al "$file" >> "$TARGETVOL"/log.txt
 
-  for SOURCE in AppleDefaultAsciiInputSource AppleCurrentAsciiInputSource AppleCurrentInputSource AppleEnabledInputSources AppleSelectedInputSources
-  do
-    ${PLBUDDY} -c "Delete :${SOURCE}" "${1}" &>/dev/null
-    if [ ${?} -eq 0 ] || [ -n "${4}" ]
-    then
-      ${PLBUDDY} -c "Add :${SOURCE} array" "${1}"
-      ${PLBUDDY} -c "Add :${SOURCE}:0 dict" "${1}"
-      ${PLBUDDY} -c "Add :${SOURCE}:0:InputSourceKind string 'Keyboard Layout'" "${1}"
-      ${PLBUDDY} -c "Add :${SOURCE}:0:KeyboardLayout\ ID integer ${3}" "${1}"
-      ${PLBUDDY} -c "Add :${SOURCE}:0:KeyboardLayout\ Name string '${2}'" "${1}"
-    fi
-  done
-  "$DefaultsCMD" read "${1}" >> "$TARGETVOL"/log.txt
-  echo "SetSwedishKeyboard check /Library/Preferences/com.apple.HIToolbox.plist" >> "$TARGETVOL"/log.txt
+"$DefaultsCMD" write "$file" AppleCurrentKeyboardLayoutInputSourceID com.apple.keylayout.Swedish-Pro
+"$DefaultsCMD" write "$file" AppleDateResID -dict smRoman -int 7
+"$DefaultsCMD" write "$file" AppleNumberResID -dict smRoman -int 7
+"$DefaultsCMD" write "$file" AppleTimeResID -dict smRoman -int 7
+"$DefaultsCMD" write "$file" AppleDefaultAsciiInputSource -dict "InputSourceKind" "Keyboard Layout" "KeyboardLayout ID" -int "7" "KeyboardLayout Name" "Swedish - Pro"
+"$DefaultsCMD" write "$file" "AppleEnabledInputSources" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish - Pro</string></dict>'
+"$DefaultsCMD" write "$file" "AppleInputSourceHistory" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish - Pro</string></dict>'
+"$DefaultsCMD" write "$file" "AppleSelectedInputSources" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish - Pro</string></dict>'
+"$DefaultsCMD" read "$file" >> "$TARGETVOL"/log.txt
 
-  "$DefaultsCMD" read "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist" >> "$TARGETVOL"/log.txt
-}
+# -rw-r--r--
+chmod 644 "$file"
+echo "SetSwedishKeyboard $file chmod" >> "$TARGETVOL"/log.txt
+ls -al "$file" >> "$TARGETVOL"/log.txt
 
-touch "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist"
-chmod 644 "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist"
-chown root:wheel "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist"
-update_kdb_layout "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist" "$KeyboardLayoutName" "$KeyboardLayoutID" --force
+"$DefaultsCMD" read "$TARGETVOL/var/db/locationd/Library/Preferences/ByHost/com.apple.locationd.$uuid" >> "$TARGETVOL"/log.txt
 
 
 exit 0
