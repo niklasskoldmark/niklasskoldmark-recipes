@@ -1,0 +1,48 @@
+#!/bin/sh
+# EnableRemoteDesktopForAdmin
+
+if [ "$3" == "/" ]; then
+    TARGETVOL=""
+else
+    TARGETVOL="$3"
+fi
+#TARGETVOL="{{target_volume}}"
+
+DefaultsCMD="$TARGETVOL/usr/bin/defaults"
+
+file="$TARGETVOL/private/var/db/dslocal/nodes/Default/users/admin.plist"
+
+touch "$file"
+# -rw-------
+chmod 600 "$file"
+chown root:wheel "$file"
+"$DefaultsCMD" write "$file" naprivs "-1073741569"
+
+
+file="$TARGETVOL/Library/Preferences/com.apple.RemoteManagement"
+# root:wheel
+chown root:wheel "$file"
+# -rw-r--r--
+chmod 644 #$file"
+"$DefaultsCMD" write "$file" "ARD_AllLocalUsers" = 0
+"$DefaultsCMD" write "$file" "DirectoryGroupLoginsEnabled" = 1
+
+
+file="$TARGETVOL/private/etc/RemoteManagement.launchd"
+# root:wheel
+chown root:wheel "$file"
+# -rw-r--r--
+chmod 644 #$file"
+# Enable
+echo "enabled" > "$file"
+
+
+
+#file="$TARGETVOL/private/etc/com.apple.screensharing.agent.launchd"
+# root:wheel
+#chown root:wheel "$file"
+# -rw-r--r--
+#chmod 644 #$file"
+# Enable
+#echo "416c6c20776f726b20616e64206e6f20706c6179206d616b65204a61636b20612064756c6c20626f79" > "$file"
+ 

@@ -19,49 +19,44 @@ MainProductVersion=$(echo "$ProductVersion" | awk -F. '{print $2}')
 ProductBuildVersion="$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServices/SystemVersion.plist" ProductBuildVersion)"
 
 
-# Checks first to see if the Mac is running 10.7.0 or higher. 
-# If so, the script checks the system default user template
-# for the presence of the Library/Preferences directory. Once
-# found, the iCloud and Diagnostic pop-up settings are set 
-# to be disabled.
+# Set whether you want to send diagnostic info back to
+# Apple and/or third party app developers. If you want
+# to send diagonostic data to Apple, set the following 
+# value for the SUBMIT_DIAGNOSTIC_DATA_TO_APPLE value:
+#
+# SUBMIT_DIAGNOSTIC_DATA_TO_APPLE=TRUE
+# 
+# If you want to send data to third party app developers,
+# set the following value for the
+# SUBMIT_DIAGNOSTIC_DATA_TO_APP_DEVELOPERS value:
+#
+# SUBMIT_DIAGNOSTIC_DATA_TO_APP_DEVELOPERS=TRUE
+# 
+# By default, the values in this script are set to 
+# send no diagnostic data: 
 
-if [[ ${MainProductVersion} -ge 7 ]]; then
-#echo "DisableErrorReporting : MainProductVersion -ge 7" >> "$TARGETVOL"/log.txt
- for USER_TEMPLATE in "$TARGETVOL/System/Library/User Template"/*
-  do
-    "$DefaultsCMD" write "${USER_TEMPLATE}"/Library/Preferences/com.apple.SetupAssistant DidSeeCloudSetup -bool TRUE
-    "$DefaultsCMD" write "${USER_TEMPLATE}"/Library/Preferences/com.apple.SetupAssistant GestureMovieSeen none
-    "$DefaultsCMD" write "${USER_TEMPLATE}"/Library/Preferences/com.apple.SetupAssistant LastSeenCloudProductVersion "${ProductVersion}"
-    "$DefaultsCMD" write "${USER_TEMPLATE}"/Library/Preferences/com.apple.SetupAssistant LastSeenBuddyBuildVersion "${ProductBuildVersion}"      
-  done
+SUBMIT_DIAGNOSTIC_DATA_TO_APPLE=FALSE
+SUBMIT_DIAGNOSTIC_DATA_TO_APP_DEVELOPERS=FALSE
 
-# Checks first to see if the Mac is running 10.7.0 or higher.
- # If so, the script checks the existing user folders in /Users
- # for the presence of the Library/Preferences directory.
- #
- # If the directory is not found, it is created and then the
- # iCloud and Diagnostic pop-up settings are set to be disabled.
+# To change this in your own script, comment out the FALSE
+# lines and uncomment the TRUE lines as appropriate.
 
- for USER_HOME in "$TARGETVOL"/Users/*
-  do
-  	#echo "DisableErrorReporting : USER_HOME=$USER_HOME" >> "$TARGETVOL"/log.txt
-    USER_UID="$(basename "${USER_HOME}")"
-    #echo "DisableErrorReporting : USER_UID=$USER_UID" >> "$TARGETVOL"/log.txt
-    if [ ! "${USER_UID}" = "Shared" ]; then
-      if [ ! -d "${USER_HOME}"/Library/Preferences ]; then
-        "$TARGETVOL"/bin/mkdir -p "${USER_HOME}"/Library/Preferences
-        "$TARGETVOL"/usr/sbin/chown "${USER_UID}" "${USER_HOME}"/Library
-        "$TARGETVOL"/usr/sbin/chown "${USER_UID}" "${USER_HOME}"/Library/Preferences
-      fi
-      if [ -d "${USER_HOME}"/Library/Preferences ]; then
-        "$DefaultsCMD" write "${USER_HOME}"/Library/Preferences/com.apple.SetupAssistant DidSeeCloudSetup -bool TRUE
-        "$DefaultsCMD" write "${USER_HOME}"/Library/Preferences/com.apple.SetupAssistant GestureMovieSeen none
-        "$DefaultsCMD" write "${USER_HOME}"/Library/Preferences/com.apple.SetupAssistant LastSeenCloudProductVersion "${ProductVersion}"
-        "$DefaultsCMD" write "${USER_HOME}"/Library/Preferences/com.apple.SetupAssistant LastSeenBuddyBuildVersion "${ProductBuildVersion}"
-        "$TARGETVOL"/usr/sbin/chown "${USER_UID}" "${USER_HOME}"/Library/Preferences/com.apple.SetupAssistant.plist
-      fi
+# Checks first to see if the Mac is running 10.10.0 or higher. 
+# If so, the desired diagnostic submission settings are applied.
+
+if [[ ${MainProductVersion} -ge 10 ]]; then
+    CRASHREPORTER_SUPPORT="$TARGETVOL/Library/Application Support/CrashReporter"
+    if [ ! -d "${CRASHREPORTER_SUPPORT}" ]; then
+        mkdir "${CRASHREPORTER_SUPPORT}"
+        chmod 775 "${CRASHREPORTER_SUPPORT}"
+        chown root:admin "${CRASHREPORTER_SUPPORT}"
     fi
-  done
+    "$DefaultsCMD" write "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory AutoSubmit -boolean ${SUBMIT_DIAGNOSTIC_DATA_TO_APPLE}
+    "$DefaultsCMD" write "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory AutoSubmitVersion -int 4
+    "$DefaultsCMD" write "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory ThirdPartyDataSubmit -boolean ${SUBMIT_DIAGNOSTIC_DATA_TO_APP_DEVELOPERS}
+    "$DefaultsCMD" write "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory ThirdPartyDataSubmitVersion -int 4
+    /bin/chmod a+r "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory.plist
+    /usr/sbin/chown root:admin "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory.plist
 fi
 
 exit 0
