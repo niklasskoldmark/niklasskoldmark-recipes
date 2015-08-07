@@ -42,14 +42,6 @@
                     <array>
                         <dict>
                             <key>path</key>
-                            <string>Library</string>
-                            <key>user</key>
-                            <string>root</string>
-                            <key>group</key>
-                            <string>admin</string>
-                        </dict>
-                        <dict>
-                            <key>path</key>
                             <string>private</string>
                             <key>user</key>
                             <string>root</string>
