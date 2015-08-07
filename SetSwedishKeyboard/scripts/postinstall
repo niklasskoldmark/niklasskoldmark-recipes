@@ -6,7 +6,7 @@ if [ "$3" == "/" ]; then
 else
     TARGETVOL="$3"
 fi
-TARGETVOL="{{target_volume}}"
+#TARGETVOL="{{target_volume}}"
 
 echo "SetSwedishKeyboard TARGETVOL = $TARGETVOL" >> "$TARGETVOL"/log.txt
 
