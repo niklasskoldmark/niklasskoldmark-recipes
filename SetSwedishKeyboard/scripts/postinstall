@@ -12,6 +12,7 @@ KeyboardLayoutName="Swedish - Pro"
 KeyboardLayout="Swedish-Pro"
 KeyboardLayoutID="7"
 
+DefaultsCMD="$TARGETVOL/usr/bin/defaults"
 
 PLBUDDY="$TARGETVOL/usr/libexec/PlistBuddy"
 
@@ -37,6 +38,10 @@ update_kdb_layout() {
       ${PLBUDDY} -c "Add :${SOURCE}:0:KeyboardLayout\ Name string '${2}'" "${1}"
     fi
   done
+  "$DefaultsCMD" read "${1}" >> "$TARGETVOL"/log.txt
+  echo "SetSwedishKeyboard check /Library/Preferences/com.apple.HIToolbox.plist" >> "$TARGETVOL"/log.txt
+
+  "$DefaultsCMD" read "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist" >> "$TARGETVOL"/log.txt
 }
 
 touch "$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist"
