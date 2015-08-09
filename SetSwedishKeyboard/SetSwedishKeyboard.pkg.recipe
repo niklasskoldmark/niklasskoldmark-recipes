@@ -3,7 +3,10 @@
 <plist version="1.0">
 <dict>
     <key>Description</key>
-    <string>Builds a "payload-free" package with a postinstall script that sets Swedish keyboard as default.</string>
+    <string>Builds a "payload-free" package with a postinstall script that sets Swedish keyboard as default.
+
+https://raw.githubusercontent.com/n8felton/DeployStudio/master/DeployStudio%20Admin.app/Contents/Frameworks/DSCore.framework/Versions/A/Resources/KeyboardLayouts.plist
+    </string>
     <key>Identifier</key>
     <string>com.github.niklasskoldmark.pkg.SetSwedishKeyboard</string>
     <key>Input</key>

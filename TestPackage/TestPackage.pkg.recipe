@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+    <string>Builds a "payload-free" package with a postinstall script that sets Swedish Language as default.</string>
+    <key>Identifier</key>
+    <string>com.github.niklasskoldmark.pkg.TestPackage</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>TestPackage</string>
+        <key>VERSION</key>
+        <string>1.0</string>
+        <key>ARD_ENABLE</key>
+        <string>true</string>
+        <key>ARD_OBSERVE</key>
+        <string>true</string>
+        <key>ARD_CONTROL</key>
+        <string>true</string>
+        <key>ARD_SHOW_WHEN_BEING_OBSERVED</key>
+        <string>true</string>
+        <key>ARD_GENERATE_REPORTS</key>
+        <string>true</string>
+        <key>ARD_OPEN_AND_QUIT_APPLICATIONS</key>
+        <string>true</string>
+        <key>ARD_CHANGE_SETTINGS</key>
+        <string>true</string>
+        <key>ARD_DELETE_AND_REPLACE_ITEMS</key>
+        <string>true</string>
+        <key>ARD_START_TEXT_CHAT_OR_SEND_MESSAGES</key>
+        <string>true</string>
+        <key>ARD_RESTART_AND_SHUT_DOWN</key>
+        <string>true</string>
+        <key>ARD_COPY_ITEMS</key>
+        <string>true</string>
+        <key>PKG_ID</key>
+        <string>com.github.niklasskoldmark.pkg.TestPackage</string>
+    </dict>
+    <key>MinimumVersion</key>
+    <string>0.2.0</string>
+    <key>Process</key>
+    <array>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>file_content</key>
+                <string>#!/bin/sh
+%ARD_ENABLE%
+
+%ARD_OBSERVE%
+%ARD_CONTROL%
+%ARD_SHOW_WHEN_BEING_OBSERVED%
+
+%ARD_GENERATE_REPORTS%
+%ARD_OPEN_AND_QUIT_APPLICATIONS%
+%ARD_CHANGE_SETTINGS%
+%ARD_DELETE_AND_REPLACE_ITEMS%
+%ARD_START_TEXT_CHAT_OR_SEND_MESSAGES%
+%ARD_RESTART_AND_SHUT_DOWN%
+%ARD_COPY_ITEMS%
+
+exit 0</string>
+                <key>file_path</key>
+                <string>%RECIPE_DIR%/scripts/postinstall</string>
+                <key>file_mode</key>
+                <string>755</string>
+            </dict>
+        </dict>
+    </array>
+</dict>
+</plist>

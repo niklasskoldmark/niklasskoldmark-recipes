@@ -6,7 +6,7 @@ if [ "$3" == "/" ]; then
 else
     TARGETVOL="$3"
 fi
-TARGETVOL="{{target_volume}}"
+#TARGETVOL="{{target_volume}}"
 echo "MakeFirstLoggedInUserAdmin 3 = $3" >> "$TARGETVOL"/log.txt
 echo "MakeFirstLoggedInUserAdmin target_volume = {{target_volume}}" >> "$TARGETVOL"/log.txt
 echo "MakeFirstLoggedInUserAdmin TARGETVOL = $TARGETVOL" >> "$TARGETVOL"/log.txt

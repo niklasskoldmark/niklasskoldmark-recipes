@@ -1,0 +1,11 @@
+#!/bin/sh
+if [ "$3" == "/" ]
+then
+    systemsetup -setnetworktimeserver 
+else
+    touch "$3/private/etc/ntp.conf"
+    echo "server time.euro.apple.com" > "$3/private/etc/ntp.conf"
+    chmod 644 "$3/private/etc/ntp.conf"
+    chown root:wheel "$3/private/etc/ntp.conf"
+fi
+exit 0

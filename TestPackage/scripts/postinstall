@@ -1,0 +1,16 @@
+#!/bin/sh
+true
+
+true
+true
+true
+
+true
+true
+true
+true
+true
+true
+true
+
+exit 0

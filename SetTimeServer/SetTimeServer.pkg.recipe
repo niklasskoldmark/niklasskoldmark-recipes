@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Description</key>
+    <string>Builds a package with a postinstall script that sets the time server.
+Values for TIMESERVER can be one the standard Apple time servers: 
+time.apple.com
+time.euro.apple.com
+time.asia.apple.com
+
+or you can use a local one</string>
+    <key>Identifier</key>
+    <string>com.github.niklasskoldmark.pkg.SetTimeServer</string>
+    <key>Input</key>
+    <dict>
+        <key>NAME</key>
+        <string>SetTimeServer</string>
+        <key>VERSION</key>
+        <string>1.0</string>
+        <key>TIMESERVER</key>
+        <string>time.euro.apple.com</string>
+        <key>OUTPUT_NAME</key>
+        <string>%NAME%-%TIMESERVER%</string>
+        <key>PKG_ID</key>
+        <string>com.github.niklasskoldmark.pkg.%NAME%</string>
+    </dict>
+    <key>MinimumVersion</key>
+    <string>0.2.0</string>
+    <key>Process</key>
+    <array>
+        <dict>
+            <key>Processor</key>
+            <string>PathDeleter</string>
+            <key>Arguments</key>
+            <dict>
+                <key>path_list</key>
+                <array>
+                    <string>%RECIPE_DIR%/scripts/postinstall</string>
+                </array>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>FileCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>file_content</key>
+                <string>#!/bin/sh
+if [ "$3" == "/" ]
+then
+    systemsetup -setnetworktimeserver 
+else
+    touch "$3/private/etc/ntp.conf"
+    echo "server %TIMESERVER%" &gt; "$3/private/etc/ntp.conf"
+    chmod 644 "$3/private/etc/ntp.conf"
+    chown root:wheel "$3/private/etc/ntp.conf"
+fi
+exit 0</string>
+                <key>file_path</key>
+                <string>%RECIPE_DIR%/scripts/postinstall</string>
+                <key>file_mode</key>
+                <string>755</string>
+            </dict>
+        </dict>
+        <dict>
+            <key>Processor</key>
+            <string>PkgCreator</string>
+            <key>Arguments</key>
+            <dict>
+                <key>pkg_request</key>
+                <dict>
+                    <key>pkgroot</key>
+                    <string>%RECIPE_DIR%/payload</string>
+                    <key>scripts</key>
+                    <string>%RECIPE_DIR%/scripts</string>
+                    <key>pkgdir</key>
+                    <string>%RECIPE_DIR%/build</string>
+                    <key>pkgname</key>
+                    <string>%OUTPUT_NAME%</string>
+                    <key>id</key>
+                    <string>%PKG_ID%</string>
+                    <key>version</key>
+                    <string>%VERSION%</string>
+                    <key>options</key>
+                    <string>purge_ds_store</string>
+                    <key>chown</key>
+                    <array>
+                    </array>
+                </dict>
+                <key>force_pkg_build</key>
+                <string>true</string>
+            </dict>
+        </dict>
+    </array>
+</dict>
+</plist>
