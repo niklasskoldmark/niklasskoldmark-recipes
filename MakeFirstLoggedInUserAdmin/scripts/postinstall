@@ -10,15 +10,15 @@ fi
 #echo "MakeFirstLoggedInUserAdmin 3 = $3" >> "$TARGETVOL"/log.txt
 #echo "MakeFirstLoggedInUserAdmin target_volume = {{target_volume}}" >> "$TARGETVOL"/log.txt
 #echo "MakeFirstLoggedInUserAdmin TARGETVOL = $TARGETVOL" >> "$TARGETVOL"/log.txt
-DefaultsCMD="/usr/bin/defaults"
+DefaultsCMD="$TARGETVOL/usr/bin/defaults"
 #echo "MakeFirstLoggedInUserAdmin DefaultsCMD = $DefaultsCMD" >> "$TARGETVOL"/log.txt
-DirnameCMD="/usr/bin/dirname"
+DirnameCMD="$TARGETVOL/usr/bin/dirname"
 #echo "MakeFirstLoggedInUserAdmin DirnameCMD = $DirnameCMD" >> "$TARGETVOL"/log.txt
-CatCMD="/bin/cat"
+CatCMD="$TARGETVOL/bin/cat"
 #echo "MakeFirstLoggedInUserAdmin CatCMD = $CatCMD" >> "$TARGETVOL"/log.txt
-MkdirCMD="/bin/mkdir"
+MkdirCMD="$TARGETVOL/bin/mkdir"
 #echo "MakeFirstLoggedInUserAdmin MkdirCMD = $MkdirCMD" >> "$TARGETVOL"/log.txt
-ChmodCMD="/bin/chmod"
+ChmodCMD="$TARGETVOL/bin/chmod"
 #echo "MakeFirstLoggedInUserAdmin MkdirCMD = $MkdirCMD" >> "$TARGETVOL"/log.txt
 
 #logger "MakeFirstLoggedInUserAdmin : Start"
@@ -27,7 +27,7 @@ ChmodCMD="/bin/chmod"
 LoginHook="$TARGETVOL/private/etc/hooks/login/MakeFirstLoggedInUserAdmin.sh" && \
 echo "MakeFirstLoggedInUserAdmin LoginHook = $LoginHook" >> "$TARGETVOL"/log.txt
 
-"$MkdirCMD" -p "$("$DirnameCMD" "$LoginHook")" && \
+"$MkdirCMD" -p "$TARGETVOL/private/etc/hooks/login" && \
 echo "MakeFirstLoggedInUserAdmin Created directory : $LoginHook" >> "$TARGETVOL"/log.txt
 
 "$CatCMD" > "$LoginHook" << 'EOF'
