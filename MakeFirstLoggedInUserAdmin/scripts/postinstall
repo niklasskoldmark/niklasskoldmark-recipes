@@ -7,19 +7,19 @@ else
     TARGETVOL="$3"
 fi
 #TARGETVOL="{{target_volume}}"
-echo "MakeFirstLoggedInUserAdmin 3 = $3" >> "$TARGETVOL"/log.txt
-echo "MakeFirstLoggedInUserAdmin target_volume = {{target_volume}}" >> "$TARGETVOL"/log.txt
-echo "MakeFirstLoggedInUserAdmin TARGETVOL = $TARGETVOL" >> "$TARGETVOL"/log.txt
-DefaultsCMD="$TARGETVOL/usr/bin/defaults"
-echo "MakeFirstLoggedInUserAdmin DefaultsCMD = $DefaultsCMD" >> "$TARGETVOL"/log.txt
-DirnameCMD="$TARGETVOL/usr/bin/dirname"
-echo "MakeFirstLoggedInUserAdmin DirnameCMD = $DirnameCMD" >> "$TARGETVOL"/log.txt
-CatCMD="$TARGETVOL/bin/cat"
-echo "MakeFirstLoggedInUserAdmin CatCMD = $CatCMD" >> "$TARGETVOL"/log.txt
-MkdirCMD="$TARGETVOL/bin/mkdir"
-echo "MakeFirstLoggedInUserAdmin MkdirCMD = $MkdirCMD" >> "$TARGETVOL"/log.txt
-ChmodCMD="$TARGETVOL/bin/chmod"
-echo "MakeFirstLoggedInUserAdmin MkdirCMD = $MkdirCMD" >> "$TARGETVOL"/log.txt
+#echo "MakeFirstLoggedInUserAdmin 3 = $3" >> "$TARGETVOL"/log.txt
+#echo "MakeFirstLoggedInUserAdmin target_volume = {{target_volume}}" >> "$TARGETVOL"/log.txt
+#echo "MakeFirstLoggedInUserAdmin TARGETVOL = $TARGETVOL" >> "$TARGETVOL"/log.txt
+DefaultsCMD="/usr/bin/defaults"
+#echo "MakeFirstLoggedInUserAdmin DefaultsCMD = $DefaultsCMD" >> "$TARGETVOL"/log.txt
+DirnameCMD="/usr/bin/dirname"
+#echo "MakeFirstLoggedInUserAdmin DirnameCMD = $DirnameCMD" >> "$TARGETVOL"/log.txt
+CatCMD="/bin/cat"
+#echo "MakeFirstLoggedInUserAdmin CatCMD = $CatCMD" >> "$TARGETVOL"/log.txt
+MkdirCMD="/bin/mkdir"
+#echo "MakeFirstLoggedInUserAdmin MkdirCMD = $MkdirCMD" >> "$TARGETVOL"/log.txt
+ChmodCMD="/bin/chmod"
+#echo "MakeFirstLoggedInUserAdmin MkdirCMD = $MkdirCMD" >> "$TARGETVOL"/log.txt
 
 #logger "MakeFirstLoggedInUserAdmin : Start"
 
@@ -96,7 +96,7 @@ EOF
     echo "MakeFirstLoggedInUserAdmin : Script permissions set" >> "$TARGETVOL"/log.txt
 #logger "MakeFirstLoggedInUserAdmin : Script permissions set"
 
-"$DefaultsCMD" write "$TARGETVOL/var/root/Library/Preferences/com.apple.loginwindow" LoginHook "$LoginHook" && \
+"$DefaultsCMD" write "$TARGETVOL/var/root/Library/Preferences/com.apple.loginwindow" LoginHook "/private/etc/hooks/login/MakeFirstLoggedInUserAdmin.sh" && \
     echo "MakeFirstLoggedInUserAdmin : Loginhook activated" >> "$TARGETVOL"/log.txt && \
     "$DefaultsCMD" read "$TARGETVOL/var/root/Library/Preferences/com.apple.loginwindow" >> "$TARGETVOL"/log.txt
 
