@@ -43,7 +43,7 @@ loggedInUID=$(/usr/bin/id -P $loggedInUsername | awk -F: '{ print $3 }') && \
 
 # Check if user is already admin
 isAdmin="$( /usr/sbin/dseditgroup -o checkmember -m $loggedInUsername admin 1>; /dev/null; echo $? )" && \
-    logger "MakeFirstLoggedInUserAdmin : Check if $loggedInUsername is already admin"
+    logger "MakeFirstLoggedInUserAdmin : Check if $loggedInUsername is already admin : $loggedInUsername = $isAdmin"
 
 # Check if user is an AD-account
 logger "MakeFirstLoggedInUserAdmin : Check if $loggedInUID is an AD-account"
