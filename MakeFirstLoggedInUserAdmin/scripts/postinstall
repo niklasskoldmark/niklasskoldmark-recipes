@@ -68,8 +68,8 @@ if [[ $loggedInUID > 1000 ]] ; then
                 logger "MakeFirstLoggedInUserAdmin : Set ManagedInstalls.plist ClientIdentifier to $loggedInUsername"
             # Log to slack
             COMPUTER_SERIAL_NUMBER=`/usr/sbin/system_profiler SPHardwareDataType | /usr/bin/awk '/Serial\ Number\ \(system\)/ {print $NF}'`
-            TIME_NOW="$(date)"
-                /usr/bin/curl -X POST --data-urlencode 'payload={"channel": "#macusermadeadmin", "username": "webhookbot", "text": "User : '"$loggedInUsername"' with UserID : loggedInUID'"$loggedInUID"' has become admin on '"$COMPUTER_SERIAL_NUMBER"' at '"$TIME_NOW"' "icon_emoji": ":ghost:"}' https://hooks.slack.com/services/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
+            TIME_NOW="$(/bin/date)"
+            /usr/bin/curl -X POST --data-urlencode 'payload={"channel": "#macusermadeadmin", "username": "webhookbot", "text": "User : '"$loggedInUsername"' with UserID : '"$loggedInUID"' became admin on '"$COMPUTER_SERIAL_NUMBER"' at '"$TIME_NOW"'.", "icon_emoji": ":ghost:"}' https://hooks.slack.com/services/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
             # SelfDestruct
             rm -- "$0" && \
                 logger "MakeFirstLoggedInUserAdmin : LoginHook SelfDestruct"
