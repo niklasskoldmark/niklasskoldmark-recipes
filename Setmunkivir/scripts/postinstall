@@ -1,0 +1,20 @@
+#!/bin/sh
+# Setmunkivir
+
+if [ "$3" == "/" ]; then
+    TARGETVOL=""
+else
+    TARGETVOL="$3"
+fi
+#TARGETVOL="{{target_volume}}"
+
+DefaultsCMD="$TARGETVOL/usr/bin/defaults"
+file="$TARGETVOL/private/var/root/Library/Preferences/ManagedInstalls.plist"
+
+touch "$file"
+# -rw-r--r--
+chmod 644 "$file"
+chown root:wheel "$file"
+"$DefaultsCMD" write "$file" SoftwareRepoURL 'http://munkivir.admbs.mbs08.se/repo'
+
+chown root:wheel "$file"
