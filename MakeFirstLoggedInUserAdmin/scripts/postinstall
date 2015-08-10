@@ -42,8 +42,13 @@ loggedInUID=$(/usr/bin/id -P $loggedInUsername | awk -F: '{ print $3 }') && \
     logger "MakeFirstLoggedInUserAdmin : loggedInUID=$loggedInUID"
 
 # Check if user is already admin
-isAdmin="$( /usr/sbin/dseditgroup -o checkmember -m $loggedInUsername admin 1>; /dev/null; echo $? )" && \
+isAdmin="$( /usr/sbin/dseditgroup -o checkmember -m "$loggedInUsername" admin 1> /dev/null; echo $? )" && \
     logger "MakeFirstLoggedInUserAdmin : Check if $loggedInUsername is already admin : $loggedInUsername = $isAdmin"
+
+# Set loginmessage Set loginmessage to : Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00
+"$DefaultsCMD" write "$TARGETVOL/Library/Preferences/com.apple.loginwindow" LoginwindowText "Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00" && \
+    logger "logger MakeFirstLoggedInUserAdmin : Set loginmessage to : Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00 was writen to : $TARGETVOL/Library/Preferences/com.apple.loginwindow"
+
 
 # Check if user is an AD-account
 logger "MakeFirstLoggedInUserAdmin : Check if $loggedInUID is an AD-account"
@@ -90,9 +95,6 @@ else
     exit 0
 fi
 
-# Set loginmessage Set loginmessage to : Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00
-"$DefaultsCMD" write "$TARGETVOL/Library/Preferences/com.apple.loginwindow" LoginwindowText "Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00" && \
-    logger "logger MakeFirstLoggedInUserAdmin : Set loginmessage to : Denna dator \\U00e4gs av Medborgarskolan.\\n\\nOm du hittat datorn v\\U00e4nligen ring : 010 157 64 00"
 
 EOF
  
