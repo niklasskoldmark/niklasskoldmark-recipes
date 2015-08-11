@@ -13,7 +13,7 @@ DefaultsCMD="$TARGETVOL/usr/bin/defaults" && \
 EchoCMD="$TARGETVOL/bin/echo" && \
 MkdirCMD="$TARGETVOL/bin/mkdir" && \
 PRODUCT_VERSION="$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServices/SystemVersion.plist" ProductVersion)" && \
-MAIN_PRODUCT_VERSION=$("$EchoCMD" "$ProductVersion" | "$AwkCMD" -F. '{print $2}') && \
+MAIN_PRODUCT_VERSION=$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServices/SystemVersion.plist" ProductVersion | "$AwkCMD" -F. '{print $2}')
 PRODUCT_BUILD_VERSION="$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServices/SystemVersion.plist" ProductBuildVersion)" && \
 if [[ ${MAIN_PRODUCT_VERSION} -ge 7 ]] ; then
     for USER_TEMPLATE in "$TARGETVOL/System/Library/User Template"/* ; do

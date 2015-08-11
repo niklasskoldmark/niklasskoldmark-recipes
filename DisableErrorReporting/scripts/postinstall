@@ -12,9 +12,8 @@ AwkCMD="$TARGETVOL/usr/bin/awk" && \
 ChmodCMD="$TARGETVOL/bin/chmod" && \
 ChownCMD="$TARGETVOL/usr/sbin/chown" && \
 DefaultsCMD="$TARGETVOL/usr/bin/defaults" && \
-EchoCMD="$TARGETVOL/bin/echo" && \
-MainProductVersion=$("$EchoCMD" "$ProductVersion" | "$AwkCMD" -F. '{print $2}')
-if [[ ${MainProductVersion} -ge 10 ]] ; then
+MAIN_PRODUCT_VERSION=$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServices/SystemVersion.plist" ProductVersion | "$AwkCMD" -F. '{print $2}')
+if [[ ${MAIN_PRODUCT_VERSION} -ge 10 ]] ; then
     CRASHREPORTER_SUPPORT="$TARGETVOL/Library/Application Support/CrashReporter"
     if [ ! -d "${CRASHREPORTER_SUPPORT}" ] ; then
         mkdir "${CRASHREPORTER_SUPPORT}" && \
