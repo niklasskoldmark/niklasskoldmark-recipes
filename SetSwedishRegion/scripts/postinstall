@@ -6,22 +6,14 @@ if [ "$3" == "/" ]; then
 else
     TARGETVOL="$3"
 fi
-#TARGETVOL="{{target_volume}}"
-
+ChmodCMD="$TARGETVOL/bin/chmod" && \
+ChownCMD="$TARGETVOL/usr/sbin/chown" && \
 DefaultsCMD="$TARGETVOL/usr/bin/defaults" && \
-    logger "SetSwedishRegion : DefaultsCMD=$DefaultsCMD"
-
-file="$TARGETVOL/Library/Preferences/.GlobalPreferences.plist" && \
-    logger "SetSwedishRegion : file=$file"
-
-touch "$file" && \
-    logger "SetSwedishRegion : touch $file"
-
-# -rw-r--r--
-chmod 644 "$file"
-chown root:wheel "$file"
-"$DefaultsCMD" write "$file" AppleLocale sv_SE && \
-    logger "SetSwedishRegion : $DefaultsCMD write $file AppleLocale sv_SE"
-
-"$DefaultsCMD" write "$file" Country SE && \
-    logger "SetSwedishRegion : $DefaultsCMD write $file Country SE"
+TouchCMD="$TARGETVOL/usr/bin/touch" && \
+CURRENT_FILE="$TARGETVOL/Library/Preferences/.GlobalPreferences.plist" && \
+"$TouchCMD" "$CURRENT_FILE" && \
+"$DefaultsCMD" write "$CURRENT_FILE" AppleLocale sv_SE && \
+"$DefaultsCMD" write "$CURRENT_FILE" Country SE && \
+"$ChmodCMD" 644 "$CURRENT_FILE" && \
+"$ChownCMD" root:wheel "$CURRENT_FILE" && \
+exit 0

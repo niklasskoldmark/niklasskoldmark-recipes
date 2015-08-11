@@ -1,63 +1,31 @@
 #!/bin/sh
 # DisableErrorReporting
-
+SUBMIT_DIAGNOSTIC_DATA_TO_APPLE=FALSE
+SUBMIT_DIAGNOSTIC_DATA_TO_APP_DEVELOPERS=FALSE
+# Determine the volume to install to
 if [ "$3" == "/" ]; then
     TARGETVOL=""
 else
     TARGETVOL="$3"
 fi
-#TARGETVOL="{{target_volume}}"
-DefaultsCMD="$TARGETVOL/usr/bin/defaults"
-
-# Determine OS version
-ProductVersion="$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServices/SystemVersion.plist" ProductVersion)"
-
-# Determine Main OS version
-MainProductVersion=$(echo "$ProductVersion" | awk -F. '{print $2}')
-
-# Determine OS build number
-ProductBuildVersion="$("$DefaultsCMD" read "$TARGETVOL/System/Library/CoreServices/SystemVersion.plist" ProductBuildVersion)"
-
-
-# Set whether you want to send diagnostic info back to
-# Apple and/or third party app developers. If you want
-# to send diagonostic data to Apple, set the following 
-# value for the SUBMIT_DIAGNOSTIC_DATA_TO_APPLE value:
-#
-# SUBMIT_DIAGNOSTIC_DATA_TO_APPLE=TRUE
-# 
-# If you want to send data to third party app developers,
-# set the following value for the
-# SUBMIT_DIAGNOSTIC_DATA_TO_APP_DEVELOPERS value:
-#
-# SUBMIT_DIAGNOSTIC_DATA_TO_APP_DEVELOPERS=TRUE
-# 
-# By default, the values in this script are set to 
-# send no diagnostic data: 
-
-SUBMIT_DIAGNOSTIC_DATA_TO_APPLE=FALSE
-SUBMIT_DIAGNOSTIC_DATA_TO_APP_DEVELOPERS=FALSE
-
-# To change this in your own script, comment out the FALSE
-# lines and uncomment the TRUE lines as appropriate.
-
-# Checks first to see if the Mac is running 10.10.0 or higher. 
-# If so, the desired diagnostic submission settings are applied.
-
-if [[ ${MainProductVersion} -ge 10 ]]; then
+AwkCMD="$TARGETVOL/usr/bin/awk" && \
+ChmodCMD="$TARGETVOL/bin/chmod" && \
+ChownCMD="$TARGETVOL/usr/sbin/chown" && \
+DefaultsCMD="$TARGETVOL/usr/bin/defaults" && \
+EchoCMD="$TARGETVOL/bin/echo" && \
+MainProductVersion=$("$EchoCMD" "$ProductVersion" | "$AwkCMD" -F. '{print $2}')
+if [[ ${MainProductVersion} -ge 10 ]] ; then
     CRASHREPORTER_SUPPORT="$TARGETVOL/Library/Application Support/CrashReporter"
-    if [ ! -d "${CRASHREPORTER_SUPPORT}" ]; then
-        mkdir "${CRASHREPORTER_SUPPORT}"
-        chmod 775 "${CRASHREPORTER_SUPPORT}"
-        chown root:admin "${CRASHREPORTER_SUPPORT}"
+    if [ ! -d "${CRASHREPORTER_SUPPORT}" ] ; then
+        mkdir "${CRASHREPORTER_SUPPORT}" && \
+        chmod 775 "${CRASHREPORTER_SUPPORT}" && \
+        chown root:admin "${CRASHREPORTER_SUPPORT}" && \
     fi
-    "$DefaultsCMD" write "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory AutoSubmit -boolean ${SUBMIT_DIAGNOSTIC_DATA_TO_APPLE}
-    "$DefaultsCMD" write "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory AutoSubmitVersion -int 4
-    "$DefaultsCMD" write "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory ThirdPartyDataSubmit -boolean ${SUBMIT_DIAGNOSTIC_DATA_TO_APP_DEVELOPERS}
-    "$DefaultsCMD" write "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory ThirdPartyDataSubmitVersion -int 4
-    /bin/chmod a+r "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory.plist
-    /usr/sbin/chown root:admin "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory.plist
+    "$DefaultsCMD" write "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory AutoSubmit -boolean ${SUBMIT_DIAGNOSTIC_DATA_TO_APPLE} && \
+    "$DefaultsCMD" write "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory AutoSubmitVersion -int 4 && \
+    "$DefaultsCMD" write "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory ThirdPartyDataSubmit -boolean ${SUBMIT_DIAGNOSTIC_DATA_TO_APP_DEVELOPERS} && \
+    "$DefaultsCMD" write "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory ThirdPartyDataSubmitVersion -int 4 && \
+    "$ChmodCMD" a+r "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory.plist && \
+    "$ChownCMD" root:admin "$CRASHREPORTER_SUPPORT"/DiagnosticMessagesHistory.plist
 fi
-
 exit 0
-

@@ -6,12 +6,13 @@ if [ "$3" == "/" ]; then
 else
     TARGETVOL="$3"
 fi
-#TARGETVOL="{{target_volume}}"
-
-file="$TARGETVOL/private/etc/localtime"
-
-rm "$file"
-ln -s "/usr/share/zoneinfo/Europe/Stockholm" "$file"
-#lrwxr-xr-x
-chmod 755 "$file"
-chown root:wheel "$file"
+ChmodCMD="$TARGETVOL/bin/chmod" && \
+ChownCMD="$TARGETVOL/usr/sbin/chown" && \
+LnCMD="$TARGETVOL/bin/ln" && \
+RmCMD="$TARGETVOL/bin/rm" && \
+CURRENT_FILE="$TARGETVOL/private/etc/localtime" && \
+"$RmCMD" -f "$CURRENT_FILE" && \
+"$LnCMD" -s "/usr/share/zoneinfo/Europe/Stockholm" "$CURRENT_FILE" && \
+"$ChmodCMD" 755 "$CURRENT_FILE" && \
+"$ChownCMD" root:wheel "$CURRENT_FILE" && \
+exit 0

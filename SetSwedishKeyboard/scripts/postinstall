@@ -1,46 +1,26 @@
 #!/bin/sh
 # SetSwedishKeyboard
-
 if [ "$3" == "/" ]; then
     TARGETVOL=""
 else
     TARGETVOL="$3"
 fi
-#TARGETVOL="{{target_volume}}"
-
-echo "SetSwedishKeyboard TARGETVOL = $TARGETVOL" >> "$TARGETVOL"/log.txt
-
-
-DefaultsCMD="$TARGETVOL/usr/bin/defaults"
-echo "SetSwedishKeyboard DefaultsCMD = $DefaultsCMD" >> "$TARGETVOL"/log.txt
-
-#file="$TARGETVOL/private/var/root/Library/Preferences/com.apple.HIToolbox.plist"
-
-file="$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist"
-echo "SetSwedishKeyboard file = $file" >> "$TARGETVOL"/log.txt
-rm -f "$file"
-echo "SetSwedishKeyboard $file rm" >> "$TARGETVOL"/log.txt
-ls -al "$file" >> "$TARGETVOL"/log.txt
-touch "$file"
-echo "SetSwedishKeyboard $file touch" >> "$TARGETVOL"/log.txt
-ls -al "$file" >> "$TARGETVOL"/log.txt
-
-"$DefaultsCMD" write "$file" AppleCurrentKeyboardLayoutInputSourceID com.apple.keylayout.Swedish-Pro
-"$DefaultsCMD" write "$file" AppleDateResID -dict smRoman -int 7
-"$DefaultsCMD" write "$file" AppleNumberResID -dict smRoman -int 7
-"$DefaultsCMD" write "$file" AppleTimeResID -dict smRoman -int 7
-"$DefaultsCMD" write "$file" AppleDefaultAsciiInputSource -dict "InputSourceKind" "Keyboard Layout" "KeyboardLayout ID" -int "7" "KeyboardLayout Name" "Swedish - Pro"
-"$DefaultsCMD" write "$file" "AppleEnabledInputSources" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish - Pro</string></dict>'
-"$DefaultsCMD" write "$file" "AppleInputSourceHistory" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish - Pro</string></dict>'
-"$DefaultsCMD" write "$file" "AppleSelectedInputSources" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish - Pro</string></dict>'
-"$DefaultsCMD" read "$file" >> "$TARGETVOL"/log.txt
-
-# -rw-r--r--
-chmod 644 "$file"
-echo "SetSwedishKeyboard $file chmod" >> "$TARGETVOL"/log.txt
-ls -al "$file" >> "$TARGETVOL"/log.txt
-
-"$DefaultsCMD" read "$TARGETVOL/var/db/locationd/Library/Preferences/ByHost/com.apple.locationd.$uuid" >> "$TARGETVOL"/log.txt
-
-
+ChmodCMD="$TARGETVOL/bin/chmod" && \
+ChownCMD="$TARGETVOL/usr/sbin/chown" && \
+DefaultsCMD="$TARGETVOL/usr/bin/defaults" && \
+RmCMD="$TARGETVOL/bin/rm" && \
+TouchCMD="$TARGETVOL/usr/bin/touch" && \
+CURRENT_FILE="$TARGETVOL/Library/Preferences/com.apple.HIToolbox.plist" && \
+"$RmCMD" -f "$CURRENT_FILE" && \
+"$TouchCMD" "$CURRENT_FILE" && \
+"$DefaultsCMD" write "$CURRENT_FILE" AppleCurrentKeyboardLayoutInputSourceID com.apple.keylayout.Swedish-Pro && \
+"$DefaultsCMD" write "$CURRENT_FILE" AppleDateResID -dict smRoman -int 7 && \
+"$DefaultsCMD" write "$CURRENT_FILE" AppleNumberResID -dict smRoman -int 7 && \
+"$DefaultsCMD" write "$CURRENT_FILE" AppleTimeResID -dict smRoman -int 7 && \
+"$DefaultsCMD" write "$CURRENT_FILE" AppleDefaultAsciiInputSource -dict "InputSourceKind" "Keyboard Layout" "KeyboardLayout ID" -int "7" "KeyboardLayout Name" "Swedish - Pro" && \
+"$DefaultsCMD" write "$CURRENT_FILE" "AppleEnabledInputSources" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish - Pro</string></dict>' && \
+"$DefaultsCMD" write "$CURRENT_FILE" "AppleInputSourceHistory" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish - Pro</string></dict>' && \
+"$DefaultsCMD" write "$CURRENT_FILE" "AppleSelectedInputSources" -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>7</integer><key>KeyboardLayout Name</key><string>Swedish - Pro</string></dict>' && \
+"$ChmodCMD" 644 "$CURRENT_FILE" && \
+"$ChownCMD" root:wheel "$CURRENT_FILE" && \
 exit 0

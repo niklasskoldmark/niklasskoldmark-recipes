@@ -6,13 +6,13 @@ if [ "$3" == "/" ]; then
 else
     TARGETVOL="$3"
 fi
-#TARGETVOL="{{target_volume}}"
-
-DefaultsCMD="$TARGETVOL/usr/bin/defaults"
-file="$TARGETVOL/Library/Preferences/.GlobalPreferences.plist"
-
-touch "$file"
-# -rw-r--r--
-chmod 644 "$file"
-chown root:wheel "$file"
-"$DefaultsCMD" write "$file" AppleLanguages '(sv)'
+ChmodCMD="$TARGETVOL/bin/chmod" && \
+ChownCMD="$TARGETVOL/usr/sbin/chown" && \
+DefaultsCMD="$TARGETVOL/usr/bin/defaults" && \
+TouchCMD="$TARGETVOL/usr/bin/touch" && \
+CURRENT_FILE="$TARGETVOL/Library/Preferences/.GlobalPreferences.plist" && \
+"$TouchCMD" "$CURRENT_FILE" && \
+"$DefaultsCMD" write "$CURRENT_FILE" AppleLanguages '(sv)' && \
+"$ChmodCMD" 644 "$CURRENT_FILE" && \
+"$ChownCMD" root:wheel "$CURRENT_FILE" && \
+exit 0

@@ -1,15 +1,18 @@
 #!/bin/sh
-## Time Server
+# Set Time Server
 
 if [ "$3" == "/" ]; then
     TARGETVOL=""
 else
     TARGETVOL="$3"
 fi
-
-file="$TARGETVOL/private/etc/ntp.conf"
-touch "$file"
-echo "server time.euro.apple.com" > "$file"
-# -rw-r--r--@
-chmod 644 "$file"
-chown root:wheel "$file"
+ChmodCMD="$TARGETVOL/bin/chmod" && \
+ChownCMD="$TARGETVOL/usr/sbin/chown" && \
+EchoCMD="$TARGETVOL/bin/echo" && \
+TouchCMD="$TARGETVOL/usr/bin/touch" && \
+CURRENT_FILE="$TARGETVOL/private/etc/ntp.conf" && \
+"$TouchCMD" "$CURRENT_FILE" && \
+"$EchoCMD" "server time.euro.apple.com" > "$CURRENT_FILE" && \
+"$ChmodCMD" 644 "$CURRENT_FILE" && \
+"$ChownCMD" root:wheel "$CURRENT_FILE" && \
+exit 0
